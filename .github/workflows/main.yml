@@ -31,4 +31,4 @@ jobs:
           echo "CONFIRM_EMAIL_TOKEN_EXPIRES_IN=${{ secrets.CONFIRM_EMAIL_TOKEN_EXPIRES_IN }}" >> .env
 
       - name: Run compose up container
-        run: docker compose -f docker-compose.prod.yaml up --build -d
+        run: docker compose -f docker-compose.prod.yml up --build -d
