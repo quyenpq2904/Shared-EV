@@ -1,0 +1,34 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  docker-compose:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create env file
+        run: |
+          echo "DATABASE_TYPE=${{ secrets.DATABASE_TYPE }}" >> .env
+          echo "DATABASE_SYNCHRONIZE=${{ secrets.DATABASE_SYNCHRONIZE }}" >> .env
+          echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> .env
+          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
+          echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> .env
+          echo "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" >> .env
+          echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "JWT_TOKEN_EXPIRES_IN=${{ secrets.JWT_TOKEN_EXPIRES_IN }}" >> .env
+          echo "REFRESH_SECRET=${{ secrets.REFRESH_SECRET }}" >> .env
+          echo "REFRESH_TOKEN_EXPIRES_IN=${{ secrets.REFRESH_TOKEN_EXPIRES_IN }}" >> .env
+          echo "FORGOT_SECRET=${{ secrets.FORGOT_SECRET }}" >> .env
+          echo "FORGOT_TOKEN_EXPIRES_IN=${{ secrets.FORGOT_TOKEN_EXPIRES_IN }}" >> .env
+          echo "CONFIRM_EMAIL_SECRET=${{ secrets.CONFIRM_EMAIL_SECRET }}" >> .env
+          echo "CONFIRM_EMAIL_TOKEN_EXPIRES_IN=${{ secrets.CONFIRM_EMAIL_TOKEN_EXPIRES_IN }}" >> .env
+
+      - name: Run compose up container
+        run: docker compose -f docker-compose.prod.yaml up --build -d

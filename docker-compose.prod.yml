@@ -1,0 +1,80 @@
+version: '3.8'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    depends_on: [zookeeper]
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  auth-service:
+    build:
+      context: .
+      args: { APP_NAME: auth-service }
+    environment:
+      APP_NAME: auth-service
+      NODE_ENV: production
+      PORT: 3001
+      GRPC_URL: 0.0.0.0:50051
+      DATABASE_TYPE: ${DATABASE_TYPE}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: auth_db
+      DATABASE_SYNCHRONIZE: 'true'
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_TOKEN_EXPIRES_IN: ${JWT_TOKEN_EXPIRES_IN}
+      REFRESH_SECRET: ${REFRESH_SECRET}
+      REFRESH_TOKEN_EXPIRES_IN: ${REFRESH_TOKEN_EXPIRES_IN}
+      FORGOT_SECRET: ${FORGOT_SECRET}
+      FORGOT_TOKEN_EXPIRES_IN: ${FORGOT_TOKEN_EXPIRES_IN}
+      CONFIRM_EMAIL_SECRET: ${CONFIRM_EMAIL_SECRET}
+      CONFIRM_EMAIL_TOKEN_EXPIRES_IN: ${CONFIRM_EMAIL_TOKEN_EXPIRES_IN}
+      KAFKA_BROKER: kafka:9092
+    depends_on: [kafka]
+
+  user-service:
+    build:
+      context: .
+      args: { APP_NAME: user-service }
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+      DATABASE_TYPE: ${DATABASE_TYPE}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: user_db
+      DATABASE_SYNCHRONIZE: 'true'
+      KAFKA_BROKER: kafka:9092
+      KAFKA_GROUP_ID: user-prod-group
+    depends_on: [kafka]
+
+  api-gateway:
+    build:
+      context: .
+      args: { APP_NAME: api-gateway }
+    ports:
+      - "80:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      AUTH_GRPC_URL: auth-service:50051
+    depends_on: [auth-service]
+
+volumes:
+  pgdata:

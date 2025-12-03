@@ -1,0 +1,24 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom", "es2021"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "strictPropertyInitialization": false,
+    "baseUrl": ".",
+    "paths": {
+      "@shared-ev/shared-dtos": ["libs/shared-dtos/src/index.ts"],
+      "@shared-ev/shared-common": ["libs/shared-common/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
