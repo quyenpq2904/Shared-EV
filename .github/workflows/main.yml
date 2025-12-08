@@ -29,6 +29,12 @@ jobs:
           echo "FORGOT_TOKEN_EXPIRES_IN=${{ secrets.FORGOT_TOKEN_EXPIRES_IN }}" >> .env
           echo "CONFIRM_EMAIL_SECRET=${{ secrets.CONFIRM_EMAIL_SECRET }}" >> .env
           echo "CONFIRM_EMAIL_TOKEN_EXPIRES_IN=${{ secrets.CONFIRM_EMAIL_TOKEN_EXPIRES_IN }}" >> .env
+          echo "EMAIL_HOST=${{ secrets.EMAIL_HOST }}" >> .env
+          echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> .env
+          echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" >> .env
+          echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}" >> .env
+          echo "EMAIL_IS_SECURE=${{ secrets.EMAIL_IS_SECURE }}" >> .env
+          echo "EMAIL_IS_TLS=${{ secrets.EMAIL_IS_TLS }}" >> .env
 
       - name: Run compose up container
         run: docker compose -f docker-compose.prod.yml up --build -d
