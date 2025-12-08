@@ -38,7 +38,7 @@ export class AccountEntity extends AbstractEntity {
     nullable: true,
   })
   @Index('UQ_user_username', {
-    where: '"deleted_at" IS NULL',
+    where: '"deleted_at" IS NULL', 
     unique: true,
   })
   username: string;

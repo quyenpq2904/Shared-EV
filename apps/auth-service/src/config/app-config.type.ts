@@ -11,4 +11,6 @@ export type AppConfig = {
   forgotExpires: string;
   confirmEmailSecret: string;
   confirmEmailExpires: string;
+  redisHost?: string;
+  redisPort?: number;
 };

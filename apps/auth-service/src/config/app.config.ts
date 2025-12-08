@@ -66,6 +66,16 @@ class EnvironmentVariablesValidator {
   @IsNotEmpty()
   @IsMs()
   CONFIRM_EMAIL_TOKEN_EXPIRES_IN: string;
+
+  @IsString()
+  @IsOptional()
+  REDIS_HOST: string;
+
+  @IsInt()
+  @Min(0)
+  @Max(65535)
+  @IsOptional()
+  REDIS_PORT: number;
 }
 
 export const appConfig = registerAs<AppConfig>('app', () => {
@@ -91,5 +101,9 @@ export const appConfig = registerAs<AppConfig>('app', () => {
     forgotExpires: process.env.FORGOT_TOKEN_EXPIRES_IN!,
     confirmEmailSecret: process.env.CONFIRM_EMAIL_SECRET!,
     confirmEmailExpires: process.env.CONFIRM_EMAIL_TOKEN_EXPIRES_IN!,
+    redisHost: process.env.REDIS_HOST,
+    redisPort: process.env.REDIS_PORT
+      ? parseInt(process.env.REDIS_PORT, 10)
+      : undefined,
   };
 });

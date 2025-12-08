@@ -12,6 +12,7 @@
         "args": ["--node-env=production"],
         "cwd": "apps/auth-service"
       },
+      "outputs": ["{workspaceRoot}/dist/apps/auth-service"],
       "configurations": {
         "development": {
           "args": ["--node-env=development"]

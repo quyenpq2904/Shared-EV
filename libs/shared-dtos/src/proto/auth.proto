@@ -4,7 +4,16 @@ package auth;
 
 service AuthService {
   rpc Register (RegisterRequest) returns (RegisterResponse);
+  rpc SignIn (LoginRequest) returns (LoginResponse);
+  rpc Logout (LogoutRequest) returns (Empty);
+  rpc RefreshToken (RefreshRequest) returns (RefreshResponse);
+  rpc ForgotPassword (ForgotPasswordRequest) returns (ForgotPasswordResponse);
+  rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
+  rpc VerifyEmail (VerifyEmailRequest) returns (VerifyEmailResponse);
+  rpc ResendVerifyEmail (ResendVerifyEmailRequest) returns (ResendVerifyEmailResponse);
 }
+
+message Empty {}
 
 message RegisterRequest {
   string email = 1;
@@ -14,6 +23,64 @@ message RegisterRequest {
 
 message RegisterResponse {
   string userId = 1;
-  string status = 2;
-  string error = 3;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string userId = 1;
+  string accessToken = 2;
+  string refreshToken = 3;
+}
+
+message LogoutRequest {
+  string userId = 1;
+  string role = 2;
+  string type = 3;
+}
+
+message RefreshRequest {
+  string refreshToken = 1;
+}
+
+message RefreshResponse {
+  string accessToken = 1;
+  string refreshToken = 2;
+}
+
+message ForgotPasswordRequest {
+  string email = 1;
+}
+
+message ForgotPasswordResponse {
+  string email = 1;
+}
+
+message ResetPasswordRequest {
+  string token = 1;
+  string newPassword = 2;
+}
+
+message ResetPasswordResponse {
+  string userId = 1;
+}
+
+message VerifyEmailRequest {
+  string token = 1;
+}
+
+message VerifyEmailResponse {
+  string email = 1;
+  string userId = 2;
+}
+
+message ResendVerifyEmailRequest {
+  string email = 1;
+}
+
+message ResendVerifyEmailResponse {
+  string email = 1;
 }

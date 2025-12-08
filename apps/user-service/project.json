@@ -12,6 +12,7 @@
         "args": ["--node-env=production"],
         "cwd": "apps/user-service"
       },
+      "outputs": ["{workspaceRoot}/dist/apps/user-service"],
       "configurations": {
         "development": {
           "args": ["--node-env=development"]

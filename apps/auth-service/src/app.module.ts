@@ -11,6 +11,9 @@ import { databaseConfig } from './database/config/database.config';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
+import { JwtModule } from '@nestjs/jwt';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -28,6 +31,20 @@ import { AllConfigType } from './config/config.type';
       },
     }),
     TypeOrmModule.forFeature([AccountEntity, SessionEntity]),
+    JwtModule.register({}),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService<AllConfigType>) => ({
+        store: await redisStore({
+          socket: {
+            host: configService.getOrThrow('app.redisHost', { infer: true }),
+            port: configService.getOrThrow('app.redisPort', { infer: true }),
+          },
+        }),
+      }),
+    }),
     ClientsModule.registerAsync([
       {
         name: 'KAFKA_CLIENT',
