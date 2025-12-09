@@ -64,4 +64,9 @@ export class AppController {
   ): Promise<ResendVerifyEmailResDto> {
     return this.appService.resendVerifyEmail(data);
   }
+
+  @GrpcMethod('AuthService', 'VerifyAccessToken')
+  verifyAccessToken(data: { token: string }): Promise<JwtPayloadType> {
+    return this.appService.verifyAccessToken(data.token);
+  }
 }

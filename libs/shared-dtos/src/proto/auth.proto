@@ -11,9 +11,22 @@ service AuthService {
   rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
   rpc VerifyEmail (VerifyEmailRequest) returns (VerifyEmailResponse);
   rpc ResendVerifyEmail (ResendVerifyEmailRequest) returns (ResendVerifyEmailResponse);
+  rpc VerifyAccessToken (VerifyAccessTokenRequest) returns (VerifyAccessTokenResponse);
 }
 
 message Empty {}
+
+message VerifyAccessTokenRequest {
+  string token = 1;
+}
+
+message VerifyAccessTokenResponse {
+  string id = 1;
+  string sessionId = 2;
+  string role = 3; // Enum as string or int ideally, but string for simplicity matching payload
+  int32 iat = 4;
+  int32 exp = 5;
+}
 
 message RegisterRequest {
   string email = 1;

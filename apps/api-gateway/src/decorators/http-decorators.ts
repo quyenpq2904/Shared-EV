@@ -2,8 +2,11 @@ import {
   applyDecorators,
   HttpCode,
   HttpStatus,
+  UseGuards,
   type Type,
 } from '@nestjs/common';
+import { AuthGuard } from '../guards/auth.guard';
+import { RolesGuard } from '../guards/roles.guard';
 import {
   ApiBasicAuth,
   ApiBearerAuth,
@@ -123,8 +126,13 @@ export const ApiAuth = (options: IApiAuthOptions = {}): MethodDecorator => {
     ...errorResponses,
   ];
 
+  if (auths.includes('jwt')) {
+    decoratorsToApply.push(UseGuards(AuthGuard));
+  }
+
   if (roles && roles.length > 0) {
     decoratorsToApply.push(Roles(roles));
+    decoratorsToApply.push(UseGuards(RolesGuard));
   }
 
   return applyDecorators(...decoratorsToApply);
