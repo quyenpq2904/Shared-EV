@@ -1,13 +1,8 @@
-import {
-  Inject,
-  Injectable,
-  UnauthorizedException,
-  ConflictException,
-} from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ClientKafka } from '@nestjs/microservices';
+import { ClientKafka, RpcException } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
 import { plainToInstance } from 'class-transformer';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
@@ -85,7 +80,10 @@ export class AppService {
       user && (await verifyPassword(password, user.password));
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException();
+      throw new RpcException({
+        code: 16,
+        message: 'Invalid credentials',
+      });
     }
 
     const hash = crypto
@@ -118,7 +116,10 @@ export class AppService {
     });
 
     if (isExistUser) {
-      throw new ConflictException('Email already exists');
+      throw new RpcException({
+        code: 6, // ALREADY_EXISTS
+        message: 'Email already exists',
+      });
     }
 
     const user = new AccountEntity({
@@ -149,7 +150,10 @@ export class AppService {
     const session = await SessionEntity.findOneBy({ id: sessionId });
 
     if (!session || session.hash !== hash) {
-      throw new UnauthorizedException();
+      throw new RpcException({
+        code: 16,
+        message: 'Invalid or expired session',
+      });
     }
 
     const user = await this.userRepository.findOneOrFail({
@@ -195,7 +199,10 @@ export class AppService {
       createCacheKey(CacheKey.FORGOT_PASSWORD, id)
     );
     if (!storedToken || storedToken !== dto.token) {
-      throw new UnauthorizedException('Invalid or expired reset token');
+      throw new RpcException({
+        code: 16,
+        message: 'Invalid or expired reset token',
+      });
     }
 
     const user = await this.userRepository.findOneOrFail({
@@ -221,7 +228,10 @@ export class AppService {
       createCacheKey(CacheKey.EMAIL_VERIFICATION, id)
     );
     if (!storedToken || storedToken !== dto.token) {
-      throw new UnauthorizedException('Invalid or expired verification token');
+      throw new RpcException({
+        code: 16,
+        message: 'Invalid or expired verification token',
+      });
     }
 
     // Logic to verify user, e.g., update user.isVarified = true
@@ -382,8 +392,12 @@ export class AppService {
       payload = this.jwtService.verify(token, {
         secret: this.configService.getOrThrow('app.secret', { infer: true }),
       });
-    } catch {
-      throw new UnauthorizedException();
+    } catch (error) {
+      console.error('Error verifying access token:', error);
+      throw new RpcException({
+        code: 16, // UNAUTHENTICATED
+        message: 'Invalid or expired token',
+      });
     }
 
     return payload;
@@ -397,7 +411,10 @@ export class AppService {
         }),
       });
     } catch {
-      throw new UnauthorizedException();
+      throw new RpcException({
+        code: 16,
+        message: 'Invalid refresh token',
+      });
     }
   }
 
@@ -412,7 +429,10 @@ export class AppService {
       });
       return { id: payload.id };
     } catch {
-      throw new UnauthorizedException('Invalid reset token');
+      throw new RpcException({
+        code: 16,
+        message: 'Invalid reset token',
+      });
     }
   }
 
@@ -427,7 +447,10 @@ export class AppService {
       });
       return { id: payload.id };
     } catch {
-      throw new UnauthorizedException('Invalid verification token');
+      throw new RpcException({
+        code: 16,
+        message: 'Invalid verification token',
+      });
     }
   }
 }

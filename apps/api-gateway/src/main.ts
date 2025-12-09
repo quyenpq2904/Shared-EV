@@ -4,12 +4,14 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
 async function bootstrap() {
   const logger = new Logger('ApiGateway');
 
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+  app.useGlobalFilters(new GlobalExceptionFilter(configService));
 
   app.enableCors({
     origin: ['http://localhost:3000', 'https://shared-ev.quyenpq.work'],
