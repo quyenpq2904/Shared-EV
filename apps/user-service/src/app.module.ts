@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { UserEntity } from './entities/user.entity';
 import { appConfig } from './config/app.config';
 import { databaseConfig } from './database/config/database.config';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -23,8 +22,9 @@ import { DataSource, DataSourceOptions } from 'typeorm';
         return new DataSource(options).initialize();
       },
     }),
-    TypeOrmModule.forFeature([UserEntity]),
+    UserModule,
   ],
-  controllers: [AppController],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

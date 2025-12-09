@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
+import { join } from 'path';
 import { AllConfigType } from './config/config.type';
 
 async function bootstrap() {
@@ -17,23 +18,33 @@ async function bootstrap() {
   ];
   const groupId = configService.getOrThrow('app.kafkaGroupId', { infer: true });
 
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      transport: Transport.KAFKA,
-      options: {
-        client: {
-          brokers: brokers,
-        },
-        consumer: {
-          groupId: groupId,
-        },
-      },
-    }
-  );
+  // Hybrid application approach
+  const app = await NestFactory.create(AppModule);
 
-  await appContext.close();
-  await app.listen();
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        brokers: brokers,
+      },
+      consumer: {
+        groupId: groupId,
+      },
+    },
+  });
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.GRPC,
+    options: {
+      package: 'user',
+      protoPath: join(__dirname, 'proto/user.proto'),
+      url: configService.get('app.grpcUrl', { infer: true }),
+    },
+  });
+
+  await app.startAllMicroservices();
+
+  await app.init();
 
   logger.log(`User Service is listening on Kafka Brokers: ${brokers}`);
   logger.log(`Consumer Group ID: ${groupId}`);

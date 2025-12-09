@@ -3,4 +3,5 @@ export type AppConfig = {
   port: number;
   kafkaBroker: string;
   kafkaGroupId: string;
+  grpcUrl: string;
 };

@@ -17,7 +17,7 @@ import { Public } from './public.decorartor';
 import { ApiPaginatedResponse } from './swagger.decorators';
 import { ErrorDto } from '@shared-ev/shared-common';
 import { Roles } from './roles.decorator';
-import { UserRole } from '@shared-ev/shared-dtos';
+import { UserRole } from '@shared-ev/shared-common';
 
 type ApiResponseType = number;
 type ApiAuthType = 'basic' | 'jwt';

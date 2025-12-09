@@ -9,7 +9,7 @@ import {
   StringFieldOptional,
 } from '../../decorators';
 
-export class PageOptionsDto {
+export class OffsetPageOptionsDto {
   @NumberFieldOptional({
     min: 1,
     default: DEFAULT_PAGE_LIMIT,

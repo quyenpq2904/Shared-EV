@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { PageOptionsDto } from './page-options.dto';
+import { OffsetPageOptionsDto } from './page-options.dto';
 
 export class OffsetPaginationDto {
   @ApiProperty()
@@ -19,7 +19,7 @@ export class OffsetPaginationDto {
   @Expose()
   readonly totalPages: number;
 
-  constructor(totalRecords: number, pageOptions: PageOptionsDto) {
+  constructor(totalRecords: number, pageOptions: OffsetPageOptionsDto) {
     this.limit = pageOptions.limit;
     this.currentPage = pageOptions.page;
     this.totalRecords = totalRecords;

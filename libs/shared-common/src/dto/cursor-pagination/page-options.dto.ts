@@ -1,7 +1,7 @@
 import { DEFAULT_PAGE_LIMIT } from '../../constants/app.constant';
 import { NumberFieldOptional, StringFieldOptional } from '../../decorators';
 
-export class PageOptionsDto {
+export class CursorPageOptionsDto {
   @StringFieldOptional()
   afterCursor?: string;
 

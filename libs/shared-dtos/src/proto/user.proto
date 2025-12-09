@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package user;
+
+service UserService {
+  rpc FindOne (FindOneUserRequest) returns (UserResponse);
+  rpc FindAll (FindAllUsersRequest) returns (UserListResponse);
+}
+
+message FindOneUserRequest {
+  string id = 1;
+}
+
+message UserResponse {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string fullName = 4;
+  string phoneNumber = 5;
+  string avatar = 6;
+  string bio = 7;
+  string createdAt = 8;
+  string updatedAt = 9;
+}
+
+message FindAllUsersRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  string order = 3; // "ASC" or "DESC"
+  string q = 4;
+}
+
+message UserListResponse {
+  repeated UserResponse data = 1;
+  Meta pagination = 2;
+}
+
+message Meta {
+  int32 limit = 1;
+  int32 currentPage = 2;
+  int32 totalRecords = 3;
+  int32 totalPages = 4;
+}

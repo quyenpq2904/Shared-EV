@@ -22,6 +22,10 @@ class EnvironmentVariablesValidator {
   @IsString()
   @IsOptional()
   KAFKA_GROUP_ID: string;
+
+  @IsString()
+  @IsOptional()
+  GRPC_URL: string;
 }
 
 export const appConfig = registerAs<AppConfig>('app', () => {
@@ -39,5 +43,6 @@ export const appConfig = registerAs<AppConfig>('app', () => {
     port,
     kafkaBroker: process.env.KAFKA_BROKER || 'localhost:29092',
     kafkaGroupId: process.env.KAFKA_GROUP_ID || 'user-service-group',
+    grpcUrl: process.env.GRPC_URL || '0.0.0.0:50051',
   };
 });

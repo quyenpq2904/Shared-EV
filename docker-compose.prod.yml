@@ -87,6 +87,7 @@ services:
       DATABASE_SYNCHRONIZE: 'true'
       KAFKA_BROKER: kafka:9092
       KAFKA_GROUP_ID: user-prod-group
+      GRPC_URL: 0.0.0.0:50052
     depends_on: [kafka, postgres]
     networks:
       - shared-ev-network
@@ -101,7 +102,8 @@ services:
       NODE_ENV: production
       PORT: 3000
       AUTH_GRPC_URL: auth-service:50051
-    depends_on: [auth-service]
+      USER_GRPC_URL: user-service:50052
+    depends_on: [auth-service, user-service]
     networks:
       - shared-ev-network
 

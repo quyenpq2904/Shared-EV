@@ -1,4 +1,4 @@
-import { UserRole } from '@shared-ev/shared-dtos';
+import { UserRole } from '../enums/user.enum';
 
 export type JwtPayloadType = {
   id: string;
