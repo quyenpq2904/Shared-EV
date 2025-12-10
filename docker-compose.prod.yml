@@ -94,6 +94,27 @@ services:
     networks:
       - shared-ev-network
 
+  email-service:
+    build:
+      context: .
+      args: { APP_NAME: email-service }
+    environment:
+      APP_NAME: email-service
+      NODE_ENV: production
+      PORT: 3003
+      KAFKA_BROKER: kafka:9092
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USER: ${MAIL_USER}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      DEFAULT_EMAIL: ${DEFAULT_EMAIL}
+      DEFAULT_NAME: ${DEFAULT_NAME}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on: [kafka, redis]
+    networks:
+      - shared-ev-network
+
   api-gateway:
     build:
       context: .

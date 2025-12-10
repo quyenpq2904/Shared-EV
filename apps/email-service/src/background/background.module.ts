@@ -4,6 +4,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { AllConfigType } from '../config/config.type';
 import { EmailQueueService } from './services/email-queue.service';
 import { EmailProcessor } from './processors/email.processor';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { EmailProcessor } from './processors/email.processor';
     BullModule.registerQueue({
       name: 'email',
     }),
+    MailModule,
   ],
   providers: [EmailQueueService, EmailProcessor],
   exports: [EmailQueueService],

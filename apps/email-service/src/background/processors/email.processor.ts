@@ -1,12 +1,18 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Logger } from '@nestjs/common';
+import { MailService } from '../../mail/mail.service';
+import { SendEmailEvent } from '@shared-ev/shared-dtos';
 
 @Processor('email')
 export class EmailProcessor extends WorkerHost {
   private readonly logger = new Logger(EmailProcessor.name);
 
-  async process(job: Job<any, any, string>): Promise<any> {
+  constructor(private readonly mailService: MailService) {
+    super();
+  }
+
+  async process(job: Job<SendEmailEvent, any, string>): Promise<any> {
     this.logger.log(
       `Processing job ${job.name} with data: ${JSON.stringify(job.data)}`
     );
@@ -21,13 +27,24 @@ export class EmailProcessor extends WorkerHost {
     }
   }
 
-  private async handleSendEmail(data: any) {
-    // TODO: Use MailerService to send email
-    this.logger.log(
-      `Sending email to ${data.to} with subject "${data.subject}"`
-    );
-    // mocking delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    this.logger.log(`Email sent to ${data.to}`);
+  private async handleSendEmail(data: SendEmailEvent) {
+    try {
+      this.logger.log(
+        `Sending email to ${data.to} with subject "${data.subject}"`
+      );
+      await this.mailService.sendMail({
+        to: data.to,
+        subject: data.subject,
+        template: data.template,
+        context: data.context,
+      });
+      this.logger.log(`Email sent to ${data.to}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to send email to ${data.to}: ${error.message}`,
+        error.stack
+      );
+      throw error;
+    }
   }
 }
