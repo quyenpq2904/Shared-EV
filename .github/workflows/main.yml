@@ -14,6 +14,7 @@ jobs:
 
       - name: Create env file
         run: |
+          echo "CLIENT_URL=${{ secrets.CLIENT_URL }}" >> .env
           echo "DATABASE_TYPE=${{ secrets.DATABASE_TYPE }}" >> .env
           echo "DATABASE_SYNCHRONIZE=${{ secrets.DATABASE_SYNCHRONIZE }}" >> .env
           echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> .env
