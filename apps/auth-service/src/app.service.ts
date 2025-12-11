@@ -32,7 +32,11 @@ import {
   Uuid,
 } from '@shared-ev/shared-common';
 
-import { AccountEntity, AccountRole } from './entities/account.entity';
+import {
+  AccountEntity,
+  AccountRole,
+  AccountStatus,
+} from './entities/account.entity';
 import { SessionEntity } from './entities/session.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
@@ -234,7 +238,13 @@ export class AppService {
       });
     }
 
-    // Logic to verify user, e.g., update user.isVarified = true
+    const user = await this.userRepository.findOneOrFail({
+      where: { id: id as Uuid },
+    });
+
+    user.status = AccountStatus.VERIFIED;
+    await user.save();
+
     await this.cacheManager.del(
       createCacheKey(CacheKey.EMAIL_VERIFICATION, id)
     );
