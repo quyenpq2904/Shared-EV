@@ -29,7 +29,7 @@ import * as path from 'path';
           })}>`,
         },
         template: {
-          dir: path.join(__dirname, '..', 'assets'),
+          dir: path.join(__dirname, 'assets'),
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
