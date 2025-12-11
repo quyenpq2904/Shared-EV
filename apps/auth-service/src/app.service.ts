@@ -266,7 +266,9 @@ export class AppService {
       EmailTemplate.VERIFY_EMAIL,
       {
         email,
-        url: `http://localhost:3000/api/auth/confirm-email?token=${token}`,
+        url: `${this.configService.getOrThrow('app.clientUrl', {
+          infer: true,
+        })}/confirm-email?token=${token}`,
       }
     );
     this.kafkaClient.emit('email.send', event);
@@ -279,7 +281,9 @@ export class AppService {
       EmailTemplate.RESET_PASSWORD,
       {
         email,
-        url: `http://localhost:3000/api/auth/reset-password?token=${token}`,
+        url: `${this.configService.getOrThrow('app.clientUrl', {
+          infer: true,
+        })}/reset-password?token=${token}`,
       }
     );
     this.kafkaClient.emit('email.send', event);

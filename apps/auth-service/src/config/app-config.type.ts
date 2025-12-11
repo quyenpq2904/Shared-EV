@@ -3,6 +3,7 @@ export type AppConfig = {
   port: number;
   kafkaBroker: string;
   grpcUrl: string;
+  clientUrl: string;
   secret: string;
   expires: string;
   refreshSecret: string;

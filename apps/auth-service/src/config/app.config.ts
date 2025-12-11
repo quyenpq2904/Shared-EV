@@ -33,6 +33,14 @@ class EnvironmentVariablesValidator {
 
   @IsString()
   @IsNotEmpty()
+  @IsUrl({
+    require_tld: false,
+    require_protocol: true,
+  })
+  CLIENT_URL: string;
+
+  @IsString()
+  @IsNotEmpty()
   JWT_SECRET: string;
 
   @IsString()
@@ -93,6 +101,7 @@ export const appConfig = registerAs<AppConfig>('app', () => {
     port,
     kafkaBroker: process.env.KAFKA_BROKER!,
     grpcUrl: process.env.GRPC_URL!,
+    clientUrl: process.env.CLIENT_URL!,
     secret: process.env.JWT_SECRET!,
     expires: process.env.JWT_TOKEN_EXPIRES_IN!,
     refreshSecret: process.env.REFRESH_SECRET!,
